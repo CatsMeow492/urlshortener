@@ -7,7 +7,7 @@ app.use(express.json());
 const mongoose = require('mongoose');
 const UrlMapping = require('./models/UrlMapping');
 
-const mongoDBUri = 'mongodb+srv://catsmeow5776:ezpassword@cluster0.pevcdhd.mongodb.net/?retryWrites=true&w=majority';
+const mongoDBUri = process.env.MONGO_DB_URI;
 
 mongoose.connect(mongoDBUri, {
   useNewUrlParser: true,
