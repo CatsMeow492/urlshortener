@@ -9,23 +9,65 @@
       href="https://cdn.freecodecamp.org/universal/favicons/favicon-16x16.png"
     />
     <link href="/public/style.css" rel="stylesheet" type="text/css" />
+    <script>
+      function attachFormSubmitListener() {
+        document
+          .getElementById("url-shortener-form")
+          .addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const form = event.target;
+            const urlInput = form.elements["url"];
+            const output = document.getElementById("short-url-output");
+
+            try {
+              const response = await fetch(form.action, {
+                method: form.method,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ url: urlInput.value }),
+              });
+
+              if (!response.ok) {
+                throw new Error(`HTTP error ${response.status}`);
+              }
+
+              const data = await response.json();
+              output.textContent = `Short URL: ${data.short_url}`;
+            } catch (error) {
+              console.error("Error submitting URL:", error.message);
+              if (error.message.startsWith("HTTP error")) {
+                output.textContent = `Error: ${error.message}`;
+              } else {
+                output.textContent = "Error: Failed to submit URL";
+              }
+            }
+          });
+      }
+      window.onload = attachFormSubmitListener;
+    </script>
   </head>
 
   <body>
     <h1>URL Shortener Microservice</h1>
     <main>
       <section>
-        <form action="api/shorturl" method="POST">
+        <form id="url-shortener-form" action="http://localhost:3000/api/shorturl/new" method="POST">
           <fieldset>
             <legend>URL Shortener</legend>
             <label for="url_input">URL:</label>
-            <input id="url_input" type="text" name="url" placeholder="https://www.freecodecamp.org/" />
+            <input
+              id="url_input"
+              type="text"
+              name="url"
+              placeholder="https://www.freecodecamp.org/"
+            />
             <input type="submit" value="POST URL" />
           </fieldset>
         </form>
       </section>
     </main>
     <footer>
+      <p id="short-url-output"></p>
       <p>By <a href="https://www.freecodecamp.org/">freeCodeCamp</a></p>
     </footer>
   </body>
