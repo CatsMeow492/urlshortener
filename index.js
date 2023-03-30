@@ -5,14 +5,12 @@ const app = express();
 const validator = require('validator');
 app.use(express.json());
 const mongoose = require('mongoose');
+const mongoUri = process.env.MONGO_URI;
 const UrlMapping = require('./models/UrlMapping');
 
 const mongoDBUri = process.env.MONGO_DB_URI;
 
-mongoose.connect(mongoDBUri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const db = mongoose.connection;
 
